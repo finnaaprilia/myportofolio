@@ -213,3 +213,29 @@ h1, .brand {
         justify-content: flex-start;
     }
 }
+
+
+
+
+.edu-second-row {
+    display: flex;
+    justify-content: left;
+    align-items: last baseline;
+    padding: 1.25rem 5.5rem;
+    line-height: 1.95;
+
+    font-size: 0.75 rem;
+    text-transform: capitalize;
+    letter-spacing: 0.02em;
+    color: black;
+    margin-bottom: 0.15 rem;
+
+    font-weight: 600;
+}
+
+.edu-third-row {
+    text-indent: 40px;
+    color: gray;
+    text-decoration: none;
+    padding-left: 3rem;
+}
