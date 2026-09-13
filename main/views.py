@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.shortcuts import render
 
 from main.models import Experience
+from main.models import Interest
 
 
 def show_main(request):
@@ -26,3 +27,11 @@ def show_experience(request):
         "experience_list": Experience.objects.all(),
     }
     return render(request, "experience.html", context)
+
+def show_interest(request):
+    context = {
+        "name": "Finna Aprilia",
+        "interest_list": Interest.objects.all(),
+    }
+
+    return render(request, "interest.html", context)

@@ -28,3 +28,23 @@ class Experience(models.Model):
     @property
     def is_ongoing(self):
         return self.ended_at is None
+
+class Interest(models.Model):
+    INTEREST_CHOICES = [
+        ('technology', 'Technology'),
+        ('business', 'Business'),
+        ('music', 'Music'),
+        ('art and culture', 'Art and Culture'),
+        ('sport', 'Sport'),
+        ('movies and cinema', 'Movies and Cinema'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    category = models.CharField(max_length=20, choices=INTEREST_CHOICES, default='technology')
+    thumbnail = models.URLField(blank=True)
+    def __str__(self):
+        return self.title
+    
+    
