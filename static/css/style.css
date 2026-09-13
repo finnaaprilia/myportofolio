@@ -5,16 +5,18 @@
 }
 
 :root {
-    --ink: #1c1917;
-    --paper: #FFE4E1;
-    --accent: #d95d39;
-    --accent-dark: #a8442a;
+    --ink: #e87ee8;
+    --paper: #722c68;
+    /* background-image: linear-gradient(to bottom right, #913478, #AD6B98, #EAA8BA); */
+    --accent: rgb(107, 76, 230);
+    --accent-dark: #FCD6E3;
     --line: #CD5C5C;
-    --text-muted: #6b6459;
+    --text-muted: #b38fed;
     --radius: 4px;
 }
 
 body {
+    background-image: linear-gradient(to bottom right, #CA31FF, #7009B4, #4000C6, #4161ED, #4EC9EF);
     font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: var(--ink);
     background-color: var(--paper);
@@ -38,7 +40,7 @@ h1, .brand {
 
 
 .site-header {
-    border-bottom: 1px solid var(--line);
+    border-bottom: 2px solid var(--line);
 }
 
 .site-header .container {
@@ -150,6 +152,7 @@ h1, .brand {
 
 .social-link:hover {
     background-color: var(--accent);
+    color: var(--ink)
 }
 
 .hero-photo {
@@ -166,6 +169,7 @@ h1, .brand {
     height: 100%;
     background-color: var(--accent);
     border-radius: var(--radius);
+    box-shadow: 0 0 20px #00ffff, 0 0 80px #00ffff;
     z-index: 0;
 }
 
@@ -177,7 +181,7 @@ h1, .brand {
     aspect-ratio: 1 / 1;
     object-fit: cover;
     border-radius: var(--radius);
-    border: 3px solid var(--ink);
+    border: 6px solid rgb(142, 119, 231);
 }
 
 
@@ -193,7 +197,7 @@ h1, .brand {
     padding: 1.5rem;
     color: var(--text-muted);
     font-size: 0.85rem;
-    border-top: 1px solid var(--line);
+    border-top: 2px solid rgb(57, 93, 239);
 }
 
 @media (max-width: 600px) {
@@ -218,7 +222,11 @@ h1, .brand {
 
 /* TUGAS 01 - SECTION BARU : EDUCATION */
 
-
+.edu-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
 .edu-row {
     margin-top: 0;
     display: block;
@@ -233,18 +241,39 @@ h1, .brand {
 }
 
 .edu-second-row {
-    display: fit-content;
-    /* background: #fb967a; */
-    padding: 0.25rem 0.5rem;
+    width: 250px;
+    height: 220px;
+    padding: 4.25rem 1.5rem;
     line-height: 1.5;
 
     font-size: 1rem;
     text-transform: none;
+    text-align: center;
     letter-spacing: 0.02em;
     color: black;
-    margin-bottom: 1.5rem;
 
     font-weight: 600;
+
+    background-color: #722c68;
+
+    background-color: var(--ink);
+    border-radius: var(--radius);
+    border: 6px solid rgb(142, 119, 231);
+}
+
+#uni {
+    background-image: url("/static/img/UI.png");
+    background-size: cover;
+}
+#uni:hover{
+    background-image: url("/static/img/UIUI.png");
+}
+#high {
+    background-image: url("/static/img/SMANDA.png");
+    background-size: cover;
+}
+#high:hover {
+    background-image: url("/static/img/SMANDA2.png");
 }
 
 .edu-third-row {
@@ -258,7 +287,6 @@ h1, .brand {
 .edu-third-row:hover {
     color: #d95d39;
     text-decoration: none;
-    /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); */
 }
 
 
@@ -292,7 +320,7 @@ h1, .brand {
 
 .experience-card {
     padding: 1.25rem;
-    background-color: #fceae8;
+    background-color: rgba(255, 255, 255, 0.15);    /* dibuat jd agak transparan */
     border: 1px solid var(--line);
     border-radius: var(--radius);
 }

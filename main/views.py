@@ -14,8 +14,8 @@ def show_main(request):
         "npm": "2506538110",
         "study_program": "S1 Sistem Informasi",
         "bio": (
-            "Mahasiswa Sistem Informasi Universitas Indonesia yang tertarik "
-            "pada bisnis digital dan dunia desain."
+            "An Undergraduate Information Systems Student at Universitas Indonesia "
+            "with an interest in technology, digital business, and design."
         ),
     }
     return render(request, "index.html", context)
