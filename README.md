@@ -101,6 +101,7 @@ Untuk pengerjaan Tugas 2 ini, saya dibantu dengan Gemini dengan pertanyaan seput
 }
 
 (2) Pengatur Tata Letak Header
+
 .site-header .container {
     display: flex;      ---> mengaktifkan mode Flexbox (membuat header Nama dan Navigation Bar berjejer ke samping)
     justify-content: space-between;   ---> mendorong header Nama ke ujung paling kiri, dan Navigation Bar ke ujung paling kanan. Ruang kosong di antaranya akan dibagi otomatis.
@@ -109,6 +110,7 @@ Untuk pengerjaan Tugas 2 ini, saya dibantu dengan Gemini dengan pertanyaan seput
 }
 
 (3) Mengatur Baris Item
+
 .edu-container {
     display: flex;  ---> mengaktifkan mode Flexbox (membuat box berjejer ke samping)
     flex-wrap: wrap; ---> membuat box otomatis menurun ke bawah (wrap) jika layar diperkecil
