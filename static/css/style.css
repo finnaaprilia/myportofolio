@@ -7,12 +7,14 @@
 :root {
     --ink: #e87ee8;
     --paper: #722c68;
-    /* background-image: linear-gradient(to bottom right, #913478, #AD6B98, #EAA8BA); */
     --accent: rgb(107, 76, 230);
     --accent-dark: #FCD6E3;
     --line: #CD5C5C;
     --text-muted: #b38fed;
     --radius: 4px;
+
+    --shadow: #00ffff;
+
 }
 
 body {
