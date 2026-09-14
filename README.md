@@ -16,7 +16,7 @@ Tugas 1 : membuat section baru pada website mengenai Education. Section ini beri
 ``` Pertanyaan Reflektif ```
 
 1. Bagaimana elemen semantik HTML5 membantu dalam membuat static web?
-Iya, saya menggunakan elemen semantik HTML5 tetapi hanya <section> saja, tidak mencakup <article> ataupun <aside>. Dalam pembuatan static web, elemen <section> akan menjadi cara kode untuk membagi kode ke dalam kelompok-kelompok dengan tema nya masing-masing. Dalam Tugas 1 ini, saya menambahkan elemen <section> baru untuk membuat kode terkait latar belakang pendidikan saya. Ini saya bedakan dari <section> sebelumnya dari Tutorial 1 yang isinya mencakup identitas nama, NPM, nama jurusan, nama instansi terkait, media sosial, serta profile photo.
+Iya, saya menggunakan elemen semantik HTML5 tetapi hanya 'section' saja, tidak mencakup 'article' ataupun 'aside'. Dalam pembuatan static web, elemen 'section' akan menjadi cara kode untuk membagi kode ke dalam kelompok-kelompok dengan tema nya masing-masing. Dalam Tugas 1 ini, saya menambahkan elemen 'section' baru untuk membuat kode terkait latar belakang pendidikan saya. Ini saya bedakan dari 'section' sebelumnya dari Tutorial 1 yang isinya mencakup identitas nama, NPM, nama jurusan, nama instansi terkait, media sosial, serta profile photo.
 
 2. Saat mengatur CSS agar tetap responsive, tantangan tata letak apa yang ditemukan?
 Saya pada awalnya menggunakan padding-left agar section baru ini tetap berada di kiri. Namun ternyata, penggunaan padding-left ini menyebabkan section terus menempel di kiri secara permanen ("terkunci"), sehingga tidak interaktif ketika layar kecilkan.
@@ -31,7 +31,7 @@ Dalam hal skalabilitas, semakin banyak konten yang dimasukkan dalam website port
 
 Untuk pengerjaan Tugas 1 ini, saya dibantu dengan Gemini dengan pertanyaan seputar:
 
-1. Berikan penjelasan mengenai elemen <dl>, <dd>, dan <dt> yang ada pada html
+1. Berikan penjelasan mengenai elemen 'dl', 'dd', dan 'dt' yang ada pada html
 Pertanyaan ini digunakan untuk membantu saya dalam pembuatan section baru di file html dimana riwayat pendidikan berada dalam ketiga elemen tersebut.
 
 2. Bagaimana cara membuat teks dengan indentasi di html?

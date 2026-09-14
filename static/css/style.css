@@ -242,23 +242,26 @@ h1, .brand {
 
 .edu-second-row {
     width: 250px;
-    height: 220px;
+    height: 200px;
     padding: 4.25rem 1.5rem;
     line-height: 1.5;
+
+    border-radius: var(--radius);
+    border: 1.5px solid rgb(142, 119, 231);
+
+    color: rgb(150, 168, 177, 0.0);
+
+}
+.edu-second-row:hover {
+    box-shadow: 0 0 10px #4EC9EF, 0 0 10px #4EC9EF;
 
     font-size: 1rem;
     text-transform: none;
     text-align: center;
     letter-spacing: 0.02em;
-    color: black;
+    color: rgb(150, 168, 177);
 
     font-weight: 600;
-
-    background-color: #722c68;
-
-    background-color: var(--ink);
-    border-radius: var(--radius);
-    border: 6px solid rgb(142, 119, 231);
 }
 
 #uni {
@@ -275,18 +278,12 @@ h1, .brand {
 #high:hover {
     background-image: url("/static/img/SMANDA2.png");
 }
-
-.edu-third-row {
-    display: inline-block;
-    color: gray;
-    text-decoration: none;
-    padding-left: 1rem;
-    margin-top: 0.25rem;
+#middle {
+    background-image: url("/static/img/SPENSA.png");
+    background-size: cover;
 }
-
-.edu-third-row:hover {
-    color: #d95d39;
-    text-decoration: none;
+#middle:hover {
+    background-image: url("/static/img/SPENSA1.png");
 }
 
 
@@ -376,7 +373,7 @@ h1, .brand {
 
 .interest-card {
     padding: 1.25rem;
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.15);   /* dibuat jd agak transparan */
     border: 1px solid var(--line);
     border-radius: var(--radius);
 }
