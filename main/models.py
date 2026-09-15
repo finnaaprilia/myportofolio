@@ -46,5 +46,15 @@ class Interest(models.Model):
     thumbnail = models.URLField(blank=True)
     def __str__(self):
         return self.title
-    
+
+
+class Education(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    institution = models.CharField(max_length=255)
+    major = models.CharField(max_length=255, blank=True, null=True)
+    start_year = models.IntegerField()
+    end_year = models.IntegerField()
+
+    def __str__(self):
+        return self.institution
     
