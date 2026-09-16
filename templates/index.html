@@ -1,26 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ name }} - Portfolio</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/style.css">
-</head>
-<body>
-    <header class="site-header">
-        <div class="container">
-            <a href="{% url 'main:show_main' %}" class="brand">{{ name }}</a>
-            <nav>
-                <a href="{% url 'main:show_main' %}">Profile</a>
-                <a href="{% url 'main:show_experience' %}">Experience</a>
-                <a href="{% url 'main:show_interest' %}">Interest</a>
-            </nav>
-        </div>
-    </header>
-
+{% extends 'base.html' %}
+{% block content %}
     <main>
         <section class="hero" id="profile">
             <div class="container hero-grid">
@@ -62,18 +41,21 @@
                     <p class="edu-row"> Education </p>
                     
                     <div class="edu-container">
-                        <dd class="edu-second-row" id="uni"> University of Indonesia <br>
+                        <dd class="edu-second-row" id="uni">
+                            University of Indonesia <br>
                             Faculty of Computer Science
                             <br> <br> 2025 - 2029
                         </dd>
                             
-                        <dd class="edu-second-row" id="high"> SMA Negeri 2 Bogor <br>
+                        <dd class="edu-second-row" id="high">
+                            SMA Negeri 2 Bogor <br>
                             Natural Science
                             <br> <br> 2022 - 2025
                         </dd>
                             
-                        <dd class="edu-second-row" id="middle"> SMP Negeri 1 Bogor
-                            <br> <br> 2019 - 2022
+                        <dd class="edu-second-row" id="middle">
+                            SMP Negeri 1 Bogor <br>
+                            <br> 2019 - 2022
                         </dd>
                     </div>
                 </div>
@@ -82,11 +64,4 @@
 
 
     </main>
-
-    <footer class="site-footer">
-        <div class="container">
-            <p>&copy; 2026 {{ name }}. Fakultas Ilmu Komputer, Universitas Indonesia.</p>
-        </div>
-    </footer>
-</body>
-</html>
+{% endblock content %}

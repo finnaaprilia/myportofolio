@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block meta %}
+    <title>Education - {{ name }}</title>
+{% endblock meta %}
+{% block content %}
+
+    <main>
+        <section class="education-section" id="education">
+            <div class="container">
+                <p class="section-kicker">My Learning Journey</p>
+                <h1>Education</h1>
+            
+                    <div class="education-grid">
+                        {% for education in education_list %}
+                            <div class="education-card">
+                                <h2> {{ education.institution }} </h2> <br>
+                                    {% if education.major %}
+                                        {{ education.major }} <br>
+                                    {% endif %}
+                                    <br> {{ education.start_year }} - {{ education.end_year }}
+                                
+                            </div>
+                        {% empty %}
+                            <p class="empty-state">
+                                Belum ada data pendidikan.
+                            </p>
+                        {% endfor %}
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+{% endblock content %}
