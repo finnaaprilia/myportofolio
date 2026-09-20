@@ -5,14 +5,14 @@
 {% block content %}
 
     <main>
-        <section class="education-section" id="education">
+        <section class="experience-section" id="experience">
             <div class="container">
                 <p class="section-kicker">My Learning Journey</p>
                 <h1>Education</h1>
             
                     <div class="education-grid">
                         {% for education in education_list %}
-                            <div class="education-card">
+                            <div class="experience-card">
                                 <h2> {{ education.institution }} </h2> <br>
                                     {% if education.major %}
                                         {{ education.major }} <br>

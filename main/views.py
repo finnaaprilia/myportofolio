@@ -2,8 +2,6 @@ from django.shortcuts import render
 
 # Create your views here.
 
-from django.shortcuts import render
-
 from django.contrib import messages
 from django.core import serializers
 from django.http import HttpResponse
@@ -13,7 +11,7 @@ from main.models import Experience
 from main.models import Interest
 from main.models import Education
 from main.models import Project
-from main.forms import ProjectForm
+from main.forms import ProjectForm, ExperienceForm
 
 
 def show_main(request):
@@ -103,6 +101,20 @@ def delete_project(request, project_id):
     if request.method == "POST":
         project.delete()
         messages.success(request, "Project berhasil dihapus!")
-        return redirect("main:show_projects")
+        return redirect("main:show_project")
 
-    return redirect("main:show_projects")
+    return redirect("main:show_project")
+
+def create_experience(request):
+    form = ExperienceForm(request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Pengalaman baru berhasil ditambahkan!")
+        return redirect("main:show_experience")
+
+    context = {
+        "name": "Finna Aprilia",
+        "form": form,
+    }
+    return render(request, "experiences_form.html", context)

@@ -5,14 +5,14 @@
 {% block content %}
     
     <main>
-        <section class="interest-section" id="interest">
+        <section class="experience-section" id="experience">
             <div class="container">
                 <p class="section-kicker">Where I Find My Daily Dose of Inspiration</p>
                 <h1>Interest</h1>
 
                 <div class="interest-grid">
                     {% for interest in interest_list %}
-                        <article class="interest-card">
+                        <article class="experience-card">
                             <span class="interest-category">
                                 {{ interest.get_category_display }}
                             </span>
