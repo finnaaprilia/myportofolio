@@ -11,7 +11,7 @@ from main.models import Experience
 from main.models import Interest
 from main.models import Education
 from main.models import Project
-from main.forms import ProjectForm, ExperienceForm
+from main.forms import ProjectForm, ExperienceForm, InterestForm
 
 
 def show_main(request):
@@ -54,12 +54,23 @@ def show_experience(request):
 
 
 def show_interest(request):
+    json_response = get_interests_json(request)
+
+    interests = serializers.deserialize(
+        "json",
+        json_response.content.decode("utf-8"),
+    )
+    interests = [interest.object for interest in interests]
+    title_query = request.GET.get("title", "").strip()
+
     context = {
         "name": "Finna Aprilia",
-        "interest_list": Interest.objects.all(),
+        "interest_list": interests,
+        "title_query": title_query,
     }
 
     return render(request, "interest.html", context)
+
 
 def show_project(request):
     json_response = get_projects_json(request)
@@ -148,3 +159,37 @@ def delete_experience(request, experience_id):
         return redirect("main:show_experience")
 
     return redirect("main:show_experience")
+
+def create_interest(request):
+    form = InterestForm(request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Hobi baru berhasil ditambahkan!")
+        return redirect("main:show_interest")
+
+    context = {
+        "name": "Finna Aprilia",
+        "form": form,
+    }
+    return render(request, "interests_form.html", context)
+
+def get_interests_json(request):
+    title_query = request.GET.get("title", "").strip()
+    interests = Interest.objects.all()
+
+    if title_query:
+        interests = interests.filter(title__icontains=title_query)
+
+    interests_json = serializers.serialize("json", interests)
+    return HttpResponse(interests_json, content_type="application/json")
+
+def delete_interest(request, interest_id):
+    interest = get_object_or_404(Interest, pk=interest_id)
+
+    if request.method == "POST":
+        interest.delete()
+        messages.success(request, "Hobi berhasil dihapus!")
+        return redirect("main:show_interest")
+
+    return redirect("main:show_interest")

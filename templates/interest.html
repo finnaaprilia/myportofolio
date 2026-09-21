@@ -3,35 +3,55 @@
     <title>Interest - {{ name }}</title>
 {% endblock meta %}
 {% block content %}
-    
     <main>
         <section class="experience-section" id="experience">
             <div class="container">
                 <p class="section-kicker">Where I Find My Daily Dose of Inspiration</p>
-                <h1>Interest</h1>
-
-                <div class="interest-grid">
+                <div class="project-header">
+                    <h1>Interests</h1>
+                    <a href="{% url 'main:create_interest' %}"
+                       class="button project-add-button">
+                        <span aria-hidden="true">+</span>
+                        Tambah Interest
+                    </a>
+                </div>
+                <form method="get"
+                      action="{% url 'main:show_interest' %}"
+                      class="project-search">
+                    <input type="search"
+                           name="title"
+                           value="{{ title_query }}"
+                           placeholder="Cari berdasarkan nama interest"
+                           class="project-search__input"
+                           aria-label="Cari berdasarkan nama interest">
+                    <button type="submit" class="button">Cari</button>
+                </form>
+                <div class="experience-grid project-grid">
                     {% for interest in interest_list %}
                         <article class="experience-card">
-                            <span class="interest-category">
-                                {{ interest.get_category_display }}
-                            </span>
+                            {% if interest.thumbnail %}
+                                <img src="{{ interest.thumbnail }}"
+                                     alt="Gambar {{ interest.title }}"
+                                     class="project-image">
+                            {% endif %}
                             <h2>{{ interest.title }}</h2>
-                            <p class="interest-description">
-                                {{ interest.description }}
-                            </p>
-
-                            
+                            <span class="experience-category">{{ interest.category }}</span>
+                            <p class="experience-description">{{ interest.description }}</p>
+                            <div class="project-card-actions">
+                                <div class="project-actions">
+                                    {% include "components/interest_delete_modal.html" with interest=interest %}
+                                </div>
+                            </div>
                         </article>
                     {% empty %}
-                        <p class="empty-state">
-                            Belum ada minat yang ditambahkan.
-                        </p>
+                        {% if title_query %}
+                            <p class="empty-state">Tidak ada interest dengan nama tersebut.</p>
+                        {% else %}
+                            <p class="empty-state">Belum ada interest yang ditambahkan.</p>
+                        {% endif %}
                     {% endfor %}
                 </div>
             </div>
         </section>
     </main>
-
-
 {% endblock content %}

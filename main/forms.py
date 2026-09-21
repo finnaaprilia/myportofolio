@@ -1,6 +1,6 @@
 from django.forms import ModelForm, TextInput, Textarea, URLInput, DateInput, CheckboxInput
 
-from main.models import Project, Experience
+from main.models import Project, Experience, Interest
 
 class ProjectForm(ModelForm):
     class Meta:
@@ -96,6 +96,50 @@ class ExperienceForm(ModelForm):
             "ended_at": DateInput(
                 attrs={
                     "type": "date",
+                }
+            ),
+        }
+
+
+
+class InterestForm(ModelForm):
+    class Meta:
+        model = Interest
+        fields = [
+            "title",
+            "description",
+            "category",
+            "thumbnail",
+        ]
+
+        labels = {
+            "title": "Nama Interest",
+            "description": "Deskripsi Interest",
+            "category": "Kategori Interest",
+            "thumbnail": "Link Gambar",
+        }
+
+        widgets = {
+            "title": TextInput(
+                attrs={
+                    "placeholder": "Interest",
+                    "maxlength": 255,
+                }
+            ),
+            "description": Textarea(
+                attrs={
+                    "placeholder": "Ceritakan hobimu",
+                    "rows": 3,
+                }
+            ),
+            "category": TextInput(
+                attrs={
+                    "placeholder": "Technology, Business, Music, Art and Culture",
+                }
+            ),
+            "thumbnail": URLInput(
+                attrs={
+                    "placeholder": "https://drive.google.com/thumbnail?id=...&sz=w1000",
                 }
             ),
         }
