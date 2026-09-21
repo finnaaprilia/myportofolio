@@ -12,6 +12,7 @@
     --line: #6c3375;
     --text-muted: #4A3568;
     --radius: 4px;
+    --radius-card: 16px;
 
     --shadow: #f86cf3d0;
     --transparan: rgba(255, 255, 255, 0.25)
@@ -176,7 +177,7 @@ h1, .brand {
     height: 100%;
     background-color: var(--accent);
     border-radius: var(--radius);
-    box-shadow: 0 0 20px var(--shadow), 0 0 80px var(--shadow);
+    /* box-shadow: 0 0 20px var(--shadow), 0 0 80px var(--shadow); */
     
     z-index: 0;
 }
@@ -327,7 +328,7 @@ h1, .brand {
     background: var(--transparan); 
     backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 16px;
+    border-radius: var(--radius-card);
     box-shadow: 0 8px 32px 0 rgba(61, 43, 86, 0.1);
     padding: 1.5rem;
 }
@@ -644,7 +645,7 @@ h1, .brand {
     box-sizing: border-box;
     padding: 0.7rem;
     border: 1px solid var(--accent);
-    border-radius: var(--radius);
+    border-radius: var(--radius-card);
     font: inherit;
     transition:
         border-color 0.2s ease,
