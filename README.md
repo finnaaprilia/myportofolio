@@ -183,6 +183,7 @@ e. Django mengirimkan HttpResponse dalam format JSON ke browser
 
 
 ``` Dokumentasi & AI Disclosure ```
+
 Untuk pengerjaan Tugas 2 ini, saya dibantu dengan Gemini dengan pertanyaan seputar:
 
 1. Sempat ada error pada kode yang tertera di bawah ini. Apa yang menjadi penyebabnya?
@@ -201,10 +202,16 @@ Untuk pengerjaan Tugas 2 ini, saya dibantu dengan Gemini dengan pertanyaan seput
 
 
 ``` Referensi ```
+
 (1) https://docs.djangoproject.com/id/2.0/topics/forms/modelforms/
+
 (2) https://www.geeksforgeeks.org/python/django-modelform-create-form-from-models/
+
 (3) https://docs.djangoproject.com/id/6.1/howto/csrf/
+
 (4) https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/Django/Forms
+
 (5) https://belajarpython.com/tutorial/fullstack-django-python/
+
 (6) https://socs.binus.ac.id/2025/10/23/json-vs-xml-perbandingan-format-data-untuk-pertukaran-informasi-modern/
 
