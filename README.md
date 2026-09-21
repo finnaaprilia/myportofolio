@@ -10,7 +10,7 @@ Kelas : PBP E
 - Frontend: HTML5, CSS
 
 
-## Tugas 1
+### Tugas 1
 
 Tugas 1 : Membuat section baru pada website mengenai Education. Section ini berisi 3 item konten, yakni latar belakang pendidikan yang mencakup jenjang S1 (yang saat ini sedang ditempuh), jenjang SMA, hingga SMP.
 
@@ -48,7 +48,7 @@ Untuk pengerjaan Tugas 1 ini, saya dibantu dengan Gemini dengan pertanyaan seput
 — Saya cukup kesulitan dan belum tahu bagaimana caranya agar posisi konten bisa mengikuti dan menyesuaikan dengan sendirinya ketika layar diperlebar maupun diperkecil. Ternyata, saya bisa menggunakan container yang sudah tersedia untuk section sebelumnya. Dan menggunakan padding-left yang berukuran kaku (dan dengan ukuran yang juga cukup besar seperti 5rem) itu tidak perlu.
 
 
-## Tugas 2
+### Tugas 2
 
 Tugas 2 : Implementasi Model-View-Template (MVT) pada Django
 
@@ -130,3 +130,81 @@ Untuk pengerjaan Tugas 2 ini, saya dibantu dengan Gemini dengan pertanyaan seput
 (2) https://www.w3schools.com/django/
 
 (3) https://id.linkedin.com/pulse/ini-dia-mengapa-class-container-sangat-penting-dalam-desain-afifudin
+
+
+### Tugas 3
+
+Tugas 3: Form & Data Delivery
+
+``` Pertanyaan Reflektif ```
+
+1. Jelaskan mengapa kita menggunakan ModelForm pada Django alih-alih membuat form HTML secara manual. Selain itu, jelaskan pula mengapa kita diwajibkan menambahkan {% csrf_token %} pada form tersebut!
+
+— Untuk menghindari redudansi (mendefinisikan ulang fields yang sudah pernah di-define sebelumnya). ModelForm sendiri adalah kelas yang secara otomatis menghasilkan formulir dari model Django. Kelas ini menghubungkan kolom formulir langsung ke kolom model, mengurangi kode yang berulang, dan membuat pembuatan formulir lebih cepat serta lebih bersih. ModelForm juga menyediakan metode dan validasi bawaan untuk menyederhanakan pemrosesan formulir.
+
+— Penambahan {% csrf_token %} pada form digunakan untuk mengurangi risiko formulir di hack oleh malicious users. Django memang menyediakan sistem form yang powerful untuk validasi dan keamanan (CSRF protection).
+
+
+2. Pada Tutorial 03, kita membahas format data JSON dan XML. Mengapa JSON lebih disukai dalam pengembangan aplikasi web modern dibandingkan XML?
+
+— JSON lebih mudah dibaca manusia dan diolah mesin karena strukturnya sederhana. XML, meskipun terstruktur, sering dianggap terlalu panjang dan rumit untuk aplikasi sederhana. Dari sisi efisiensi dan ukuran dan kecepatan, ukuran file JSON lebih kecil dibandng XML (karena JSON tidak menggunakan tag penutup). Kemudian, JSON juga mendukung berbagai tipe data seperti angka, string, boolean, sementara XML memperlakukan semua isi elemen sebagai teks sehingga developer perlu melakukan konversi manual ke tipe data lain.
+
+
+3. Jelaskan alur yang terjadi saat kamu menggunakan fungsi view untuk mengembalikan data portofoliomu dalam bentuk JSON. Mengapa kita perlu melakukan proses serialization pada model Django sebelum datanya dikembalikan?
+
+— Alur yang terjadi saat menggunakan fungsi view
+
+a. Browser mengirimkan HTTP request ke URL yang mengarah ke view JSON
+
+b. Django lalu mengambil data dari database menggunakan ORM (Object-Relational Mapping)
+
+c. Modul serializers akan mengubah objek Django menjadi format string JSON
+
+d. String JSON dimasukkan ke objek HttpResponse
+
+e. Django mengirimkan HttpResponse dalam format JSON ke browser
+
+    contoh :
+    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+    def get_experiences_json(request):
+        title_query = request.GET.get("title", "").strip()
+        experiences = Experience.objects.all()  -->  ORM (Object-Relational Mapping)
+
+        if title_query:
+            experiences = experiences.filter(title__icontains=title_query)
+
+        experiences_json = serializers.serialize("json", experiences)  --> serialization
+        return HttpResponse(experiences_json, content_type="application/json")  --> membentuk respon HTTP
+    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+— Proses serialization pada Model Django bertujuan untuk menerjemahkan model Django ke format lain, dalam kasus ini, JSON. Hal ini dilakukan untuk menghindari adanya kasus dimana format data tidak kompatibel.
+
+— contoh : data = serializers.serialize("json", SomeModel.objects.all()) artinya "Menserialisasikan ke dan dari JSON."
+
+
+``` Dokumentasi & AI Disclosure ```
+Untuk pengerjaan Tugas 2 ini, saya dibantu dengan Gemini dengan pertanyaan seputar:
+
+1. Sempat ada error pada kode yang tertera di bawah ini. Apa yang menjadi penyebabnya?
+
+    def get_experiences_json(request):
+        title_query = request.GET.get("title", "").strip()
+        experiences = Experience.objects.all()
+
+        if title_query:
+            experiences = Experience.filter(title__icontains=title_query)
+
+        experiences_json = serializers.serialize("json", experiences)
+        return HttpResponse(experiences_json, content_type="application/json")
+
+    Ada kesalahan penulisan di bagian kode 'experiences = experiences.filter(title__icontains=title_query)' dimana tertulis Experience bukan experiences. Hal ini menimbulkan error karena Experience merupakan Class Model dan tidak memiliki fungsi filter(). Fungsi filter() milik .objects. Maka, jika ingin filter langsung dari Model Manager, bisa menggunakan 'experiences = Experiences.objects.filter(title__icontains=title_query)'
+
+
+``` Referensi ```
+(1) https://docs.djangoproject.com/id/2.0/topics/forms/modelforms/
+(2) https://www.geeksforgeeks.org/python/django-modelform-create-form-from-models/
+(3) https://docs.djangoproject.com/id/6.1/howto/csrf/
+(4) https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/Django/Forms
+(5) https://belajarpython.com/tutorial/fullstack-django-python/
+(6) https://socs.binus.ac.id/2025/10/23/json-vs-xml-perbandingan-format-data-untuk-pertukaran-informasi-modern/
+
