@@ -92,10 +92,16 @@ def show_project(request):
     projects = [project.object for project in projects]
     title_query = request.GET.get("title", "").strip()
 
+    is_editor = (
+            request.user.is_authenticated
+            and request.user.groups.filter(name="Editor").exists()
+        )
+
     context = {
         "name": "Finna Aprilia",
         "project_list": projects,
         "title_query": title_query,
+        "is_editor": is_editor,
     }
 
     return render(request, "project.html", context)
@@ -151,6 +157,37 @@ def delete_project(request, project_id):
         return redirect("main:show_project")
 
     return redirect("main:show_project")
+
+@login_required(login_url="/login/")
+def edit_project(request, project_id):
+
+    is_editor = (
+                request.user.is_authenticated
+                and request.user.groups.filter(name="Editor").exists()
+            )
+    
+    if not (request.user.is_superuser or is_editor):
+        raise PermissionDenied
+
+    project = get_object_or_404(Project, pk=project_id)
+
+    # inisialisasi form dengan mengisi data lama
+    form = ProjectForm(request.POST or None, instance=project)
+
+    # jika form dikirim (POST) dan datanya valid, maka simpan perubahannya
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Project berhasil diperbaharui")
+        return redirect("main:show_project")
+
+    context = {
+        "name": "Finna Aprilia",
+        "form": form,
+        "project": project,
+        "is_edit": True,
+    }
+    return render(request, "projects_form.html", context)
+
 
 def create_experience(request):
     form = ExperienceForm(request.POST or None)
