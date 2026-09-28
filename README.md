@@ -184,7 +184,7 @@ e. Django mengirimkan HttpResponse dalam format JSON ke browser
 
 ``` Dokumentasi & AI Disclosure ```
 
-Untuk pengerjaan Tugas 2 ini, saya dibantu dengan Gemini dengan pertanyaan seputar:
+Untuk pengerjaan Tugas 3 ini, saya dibantu dengan Gemini dengan pertanyaan seputar:
 
 1. Sempat ada error pada kode yang tertera di bawah ini. Apa yang menjadi penyebabnya?
 
@@ -215,3 +215,19 @@ Untuk pengerjaan Tugas 2 ini, saya dibantu dengan Gemini dengan pertanyaan seput
 
 (6) https://socs.binus.ac.id/2025/10/23/json-vs-xml-perbandingan-format-data-untuk-pertukaran-informasi-modern/
 
+
+
+### Tugas 4
+
+``` Dokumentasi & AI Disclosure ```
+
+Pengerjaan Tugas 4 dilakukan dengan bantuan Gemini. Sempat ada error (PageNotFound) ketika user login sebagai Editor dan mencoba memencet tombol "Update Project".
+Error PageNotFound (atau HTTP 404) terjadi ketika sistem tidak menemukan alamat URL atau route yang dituju saat tombol Update Project ditekan.
+
+- Masalah pada URL atau RouteURL salah ketik: Alamat tujuan pada atribut action di form atau fungsi fetch/axios salah.
+
+- Parameter ID hilang: URL update membutuhkan ID proyek (contoh: /projects/update/), tetapi data ID tidak terkirim dari halaman web (menjadi /projects/update/undefined).
+
+Setelah di cek di bagian urls.py di main, masalahnya terletak pada tidak adanya penambahan ID pada path("projects/< uuid:project_id >/edit/", edit_project, name="edit_project").
+
+ID yang bersifat unik akan memberi tahu project mana yang ingin di edit. Apabila tidak ada ID, maka Django tidak bisa menemukan project mana yang sebetulnya akan dituju. Dan ID ini sudah menjadi parameter di method edit_project di main/views.py
