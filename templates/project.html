@@ -15,13 +15,16 @@
                     </button>
 
                     <h1>Projects</h1>
-                    {% if user.is_superuser %}  {# Tambahkan baris ini #}
-                        <a href="{% url 'main:create_project' %}"
-                        class="button project-add-button">
+                    {% if user.is_superuser %}
+
+                        <button type="button"
+                            class="button project-add-button"
+                            popovertarget="add-project-modal">
                             <span aria-hidden="true">+</span>
                             Tambah Proyek
-                        </a>
-                    {% endif %}                 {# Tambahkan baris ini #}
+                        </button>
+                        
+                    {% endif %}
                 </div>
                 <form method="get"
                       action="{% url 'main:show_project' %}"
@@ -69,7 +72,9 @@
         </section>
     </main>
 
-
+{% if user.is_superuser %}
+    {% include "components/project_form_modal.html" %}
+{% endif %}
     
     <script>
     // Konfigurasi
@@ -218,6 +223,10 @@
         clearTimeout(searchDebounceTimer);
         searchProjects();
     });
+    
+    function closeProjectModal() {
+        document.getElementById("add-project-modal").hidePopover();
+    }
     
     // Start application
     fetchProjects(searchInput.value.trim());

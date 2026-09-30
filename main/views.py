@@ -115,6 +115,7 @@ def show_project(request):
     context = {
         "name": "Finna Aprilia",
         "title_query": title_query,
+        "form": ProjectForm(),
     }
     return render(request, "project.html", context)
 
