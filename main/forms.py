@@ -54,6 +54,7 @@ class ProjectForm(ModelForm):
             ),
         }
 
+    # Sebagai lapisan pertahanan kedua, dengan membuang tag HTML sejak data masuk.
     def clean_title(self):
         title = strip_tags(self.cleaned_data["title"]).strip()
         if not title:
