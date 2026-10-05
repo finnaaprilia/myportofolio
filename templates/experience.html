@@ -8,12 +8,18 @@
             <div class="container">
                 <p class="section-kicker">My journey so far</p>
                 <div class="project-header">
+
                     <h1>Experiences</h1>
-                    <a href="{% url 'main:create_experience' %}"
-                       class="button experience-add-button">
-                        <span aria-hidden="true">+</span>
-                        Tambah Pengalaman
-                    </a>
+                    {% if user.is_superuser %}
+
+                        <button type="button"
+                            class="button project-add-button"
+                            popovertarget="add-project-modal">
+                            <span aria-hidden="true">+</span>
+                            Tambah Pengalaman
+                        </button>
+                        
+                    {% endif %}
                 </div>
                 <!-- <form method="get"
                       action="{% url 'main:show_experience' %}"
@@ -61,7 +67,9 @@
         </section>
     </main>
 
-
+{% if user.is_superuser %}
+    {% include "components/experience_form_modal.html" %}
+{% endif %}
     
     <script>
     // Konfigurasi
@@ -96,16 +104,16 @@
         const articleElement = document.createElement('article');
         articleElement.className = 'experience-card';
 
-        const imageHtml = experience.experience_image_url 
-            ? `<img src="${experience.experience_image_url}" alt="Gambar ${experience.title}" class="project-image">`
+        const imageHtml = experience.thumbnail 
+            ? `<img src="${experience.thumbnail}" alt="Gambar ${experience.title}" class="project-image">`
             : '';
 
+
+       
 
         // Dummy UUID digunakan untuk digantikan oleh ID asli dari data JSON
         const deleteUrl = "{% url 'main:delete_experience' '00000000-0000-0000-0000-000000000000' %}"
             .replace('00000000-0000-0000-0000-000000000000',experienceId);
-        // const starUrl = "{% url 'main:toggle_star' '00000000-0000-0000-0000-000000000000' %}"
-        //     .replace('00000000-0000-0000-0000-000000000000', experienceId);
 
         const deleteHtml = IS_SUPERUSER 
             ? `<form method="post" action="${deleteUrl}" style="display:inline;">
@@ -127,18 +135,8 @@
             <p class="experience-description">${experience.description}</p>
             <div class="project-card-actions">
                 <div class="project-actions">
-                    ${urlHtml}
                     
-                    <form method="post" action="${starUrl}" class="star-form">
-                        {% csrf_token %}
-                        <button type="submit" 
-                                class="button button-star${isStarredClass}"
-                                title="${starTitle}">
-                            <span aria-hidden="true">★</span>
-                            ${starText}
-                            <span class="star-count">${experience.star_count}</span>
-                        </button>
-                    </form>
+                
 
                     ${deleteHtml}
                 </div>
@@ -201,6 +199,10 @@
         clearTimeout(searchDebounceTimer);
         searchExperiences();
     });
+
+    function closeExperienceModal() {
+        document.getElementById("add-project-modal").hidePopover();
+    }
 
     // Start application
     fetchExperiences(searchInput.value.trim());

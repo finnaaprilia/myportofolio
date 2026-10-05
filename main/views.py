@@ -56,6 +56,7 @@ def show_experience(request):
     context = {
         "name": "Finna Aprilia",
         "title_query": title_query,
+        "form": ExperienceForm,
     }
     return render(request, "experience.html", context)
 
@@ -285,11 +286,11 @@ def get_experiences_json(request):
     data = []
     for experience in experiences:
         data.append({
-            "pk": str(experiences.id),
+            "pk": str(experience.id),
             "fields": {
-                "title": experiences.title,
-                "description": experiences.description,
-                "experience_image_url": experiences.experience_image_url,
+                "title": experience.title,
+                "description": experience.description,
+                "thumbnail": experience.thumbnail,
                 "star_count": 0,
                 "is_starred": False,
                 "starred_by_names": "",
