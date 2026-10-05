@@ -262,15 +262,23 @@ def create_experience(request):
     }
     return render(request, "experiences_form.html", context)
 
-# def get_experiences_json(request):
-#     title_query = request.GET.get("title", "").strip()
-#     experiences = Experience.objects.all()
+@require_POST
+def create_experience_ajax(request):
+    if not request.user.is_superuser:
+        return JsonResponse(
+            {"message": "Hanya pemilik portofolio yang dapat menambahkan pengalaman."},
+            status=403,
+        )
 
-#     if title_query:
-#         experiences = experiences.filter(title__icontains=title_query)
+    form = ExperienceForm(request.POST)
+    if form.is_valid():
+        experience = form.save()
+        return JsonResponse(
+            {"message": "Proyek berhasil ditambahkan.", "pk": str(experience.id)},
+            status=201,
+        )
 
-#     experiences_json = serializers.serialize("json", experiences)
-#     return HttpResponse(experiences_json, content_type="application/json")
+    return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
 
 
 from django.http import JsonResponse
