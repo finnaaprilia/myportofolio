@@ -49,19 +49,12 @@ def show_education(request):
     return render(request, "education.html", context)
 
 
-def show_experience(request):
-    json_response = get_experiences_json(request)
 
-    experiences = serializers.deserialize(
-        "json",
-        json_response.content.decode("utf-8"),
-    )
-    experiences = [experience.object for experience in experiences]
+def show_experience(request):
     title_query = request.GET.get("title", "").strip()
 
     context = {
         "name": "Finna Aprilia",
-        "experience_list": experiences,
         "title_query": title_query,
     }
     return render(request, "experience.html", context)
@@ -268,6 +261,19 @@ def create_experience(request):
     }
     return render(request, "experiences_form.html", context)
 
+# def get_experiences_json(request):
+#     title_query = request.GET.get("title", "").strip()
+#     experiences = Experience.objects.all()
+
+#     if title_query:
+#         experiences = experiences.filter(title__icontains=title_query)
+
+#     experiences_json = serializers.serialize("json", experiences)
+#     return HttpResponse(experiences_json, content_type="application/json")
+
+
+from django.http import JsonResponse
+
 def get_experiences_json(request):
     title_query = request.GET.get("title", "").strip()
     experiences = Experience.objects.all()
@@ -275,8 +281,22 @@ def get_experiences_json(request):
     if title_query:
         experiences = experiences.filter(title__icontains=title_query)
 
-    experiences_json = serializers.serialize("json", experiences)
-    return HttpResponse(experiences_json, content_type="application/json")
+    # Konstruksi data JSON secara manual agar bisa menyisipkan logika Star
+    data = []
+    for experience in experiences:
+        data.append({
+            "pk": str(experiences.id),
+            "fields": {
+                "title": experiences.title,
+                "description": experiences.description,
+                "experience_image_url": experiences.experience_image_url,
+                "star_count": 0,
+                "is_starred": False,
+                "starred_by_names": "",
+            }
+        })
+
+    return JsonResponse(data, safe=False)
 
 def delete_experience(request, experience_id):
     experience = get_object_or_404(Experience, pk=experience_id)
