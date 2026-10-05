@@ -231,3 +231,35 @@ Error PageNotFound (atau HTTP 404) terjadi ketika sistem tidak menemukan alamat 
 Setelah di cek di bagian urls.py di main, masalahnya terletak pada tidak adanya penambahan ID pada path("projects/< uuid:project_id >/edit/", edit_project, name="edit_project").
 
 ID yang bersifat unik akan memberi tahu project mana yang ingin di edit. Apabila tidak ada ID, maka Django tidak bisa menemukan project mana yang sebetulnya akan dituju. Dan ID ini sudah menjadi parameter di method edit_project di main/views.py
+
+
+
+
+### Tugas 5
+
+
+``` Pertanyaan Reflektif ```
+
+1. Jelaskan apa itu debouncing dan mengapa teknik ini penting diterapkan pada fitur pencarian yang menggunakan AJAX!
+
+— Debouncing adalah teknik untuk menunda sebuah fungsi hingga suatu jeda waktu berlalu tanpa event baru. Selama pengguna masih mengetik, timer sebelumnya dibatalkan dan dimulai lagi. Dengan demikian, browser hanya mengirim permintaan setelah pengguna berhenti mengetik selama sejenak.
+
+— Teknik ini penting diterapkan pada fitur pencarian yang menggunakan AJAX salah satunya untuk mengurangi jumlah permintaan HTTP (HTTP Requests) yang tidak perlu
+
+
+2. Jelaskan fungsi dari penggunaan await ketika kita menggunakan fetch()! Apa yang akan terjadi jika kita tidak menggunakan await?
+
+— await adalah keyword yang hanya bisa digunakan di dalam async function dan berfungsi untuk “menunggu” Promise selesai diproses sebelum melanjutkan ke baris kode berikutnya. Tanpa await, sebuah Promise akan tetap berjalan di belakang layar dan kode berikutnya akan langsung dieksekusi tanpa menunggu hasilnya.
+
+
+3. Jelaskan apa itu serangan XSS (Cross-Site Scripting) dan mengapa data yang ditampilkan melalui AJAX/JavaScript lebih rentan terhadap serangan ini daripada data yang ditampilkan langsung melalui template Django!
+
+— Cross-Site Scripting (XSS) adalah serangan ketika penyerang berhasil menyisipkan kode JavaScript miliknya ke dalam halaman web yang kemudian dijalankan di browser pengguna lain. Salah satu jenisnya adalah stored XSS, yaitu ketika kode berbahaya disimpan ke database (misalnya sebagai judul proyek) lalu ikut dijalankan setiap kali data tersebut ditampilkan.
+
+— Data yang ditampilkan melalui AJX/JavaScript akan lebih rentan terdahadap serangan XSS daripada data yang ditampilkan langsung melalui template DJango. Alasan pertama, karena template Django memiliki fitur auto-escaping aawaan. Secara default, mesin template Django secara otomatis mengubah karakter berbahaya seperti <, >, ", ', dan & menjadi HTML entities (misalnya < menjadi &lt;). Hal ini membuat browser menampilkannya sebagai teks biasa dan bukan mengeksekusinya sebagai tag HTML/JS.
+
+
+
+``` Dokumentasi & AI Disclosure ```
+
+Pengerjaan Tugas 5 dilakukan dengan bantuan Gemini.
