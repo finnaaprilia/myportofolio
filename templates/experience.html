@@ -21,17 +21,6 @@
                         
                     {% endif %}
                 </div>
-                <!-- <form method="get"
-                      action="{% url 'main:show_experience' %}"
-                      class="project-search">
-                    <input type="search"
-                           name="title"
-                           value="{{ title_query }}"
-                           placeholder="Cari berdasarkan nama pengalaman"
-                           class="project-search__input"
-                           aria-label="Cari berdasarkan nama pengalaman">
-                    <button type="submit" class="button">Cari</button>
-                </form> -->
                 
                 <!-- Form Pencarian AJAX (tanpa method dan action) -->
                 <form id="experience-search-form" class="project-search">
@@ -56,12 +45,42 @@
                 </div>
 
                 <!-- Empty State -->
-                <div id="empty" class="empty-state hide">
-                    <p>Belum ada pengalaman yang ditambahkan atau ditemukan.</p>
-                </div>
+                {% if not experience_list %}
+                    <p class="empty-state">
+                        Belum ada pengalaman yang ditambahkan.
+                    </p>
+                {% endif %}
 
                 <!-- Project Grid -->
-                <div id="grid" class="experience-grid project-grid hide"></div>
+                <div id="grid" class="experience-grid project-grid">
+                    {% for experience in experience_list %}
+                        <article class="experience-card">
+
+                            {% if experience.thumbnail %}
+                                <img
+                                    src="{{ experience.thumbnail.url }}"
+                                    alt="Gambar {{ experience.title }}"
+                                    class="project-image"
+                                >
+                            {% endif %}
+
+                            <h2>{{ experience.title }}</h2>
+
+                            <p class="experience-description">
+                                {{ experience.description }}
+                            </p>
+
+                            <p>{{ experience.get_category_display }}</p>
+
+                            {% if experience.is_ongoing %}
+                                <p>Sedang berlangsung</p>
+                            {% else %}
+                                <p>Selesai</p>
+                            {% endif %}
+
+                        </article>
+                    {% endfor %}
+                </div>
 
             </div>
         </section>
@@ -142,7 +161,7 @@
         const completeCardHtml = `
             ${imageHtml}
             <h2>${escapeHtml(experience.title)}</h2>
-            <p class="experience-description">${escapeHtml(experience.experience)}</p>
+            <p class="experience-description">${escapeHtml(experience.description)}</p>
             <div class="project-card-actions">
                 <div class="project-actions">
                     
