@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import include, path
 
 from main.views import show_main, show_education, show_experience, show_interest, show_project, create_project, get_projects_json, delete_project
 from main.views import create_experience, get_experiences_json, delete_experience, create_interest, get_interests_json, delete_interest
@@ -32,6 +32,11 @@ urlpatterns = [
     path("login/", login_user, name="login"),
     path("logout/", logout_user, name="logout"),
 
-    # Tambahkan path ini ke dalam urlpatterns
     path("projects/<uuid:project_id>/star/", toggle_star, name="toggle_star"),
+    
+]
+
+urlpatterns += [
+    path("api/v1/", include("main.api_urls")),
+    path("api-auth/", include("rest_framework.urls")),
 ]
