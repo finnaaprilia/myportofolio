@@ -45,11 +45,9 @@
                 </div>
 
                 <!-- Empty State -->
-                {% if not experience_list %}
-                    <p class="empty-state">
-                        Belum ada pengalaman yang ditambahkan.
-                    </p>
-                {% endif %}
+                <div id="empty" class="empty-state {% if experience_list %}hide{% endif %}">
+                    <p>Belum ada pengalaman yang ditambahkan.</p>
+                </div>
 
                 <!-- Project Grid -->
                 <div id="grid" class="experience-grid project-grid">
