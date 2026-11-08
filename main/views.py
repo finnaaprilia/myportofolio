@@ -49,35 +49,9 @@ def show_education(request):
     return render(request, "education.html", context)
 
 
-
-def show_experience(request):
-    title_query = request.GET.get("title", "").strip()
-
-    context = {
-        "name": "Finna Aprilia",
-        "title_query": title_query,
-        "form": ExperienceForm,
-    }
-    return render(request, "experience.html", context)
-
-
-def show_interest(request):
-    json_response = get_interests_json(request)
-
-    interests = serializers.deserialize(
-        "json",
-        json_response.content.decode("utf-8"),
-    )
-    interests = [interest.object for interest in interests]
-    title_query = request.GET.get("title", "").strip()
-
-    context = {
-        "name": "Finna Aprilia",
-        "interest_list": interests,
-        "title_query": title_query,
-    }
-
-    return render(request, "interest.html", context)
+# =============================================================
+# ========================== PROJECT ==========================
+# =============================================================
 
 
 # def show_project(request):
@@ -123,7 +97,7 @@ def create_project(request):
     # kalau bukan, hentikan permintaannya dengan 403.
     if not request.user.is_superuser:
         raise PermissionDenied
-    
+   
     form = ProjectForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
@@ -207,7 +181,7 @@ def delete_project(request, project_id):
     # kalau bukan, hentikan permintaannya dengan 403.
     if not request.user.is_superuser:
         raise PermissionDenied
-    
+   
     project = get_object_or_404(Project, pk=project_id)
 
     if request.method == "POST":
@@ -224,7 +198,7 @@ def edit_project(request, project_id):
                 request.user.is_authenticated
                 and request.user.groups.filter(name="Editor").exists()
             )
-    
+   
     if not (request.user.is_superuser or is_editor):
         raise PermissionDenied
 
@@ -247,6 +221,45 @@ def edit_project(request, project_id):
     }
     return render(request, "projects_form.html", context)
 
+
+# Tanpa cek is_superuser: semua akun yang sudah login boleh memberi star
+@login_required(login_url="/login/")
+def toggle_star(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+
+    if request.method == "POST":
+        # Kalau akun ini sudah pernah memberi star, batalkan star-nya.
+        # Kalau belum, tambahkan star.
+        if request.user in project.starred_by.all():
+            project.starred_by.remove(request.user)
+        else:
+            project.starred_by.add(request.user)
+
+    return redirect("main:show_project")
+
+
+# =============================================================
+# ======================== EXPERIENCE =========================
+# =============================================================
+
+def show_experience(request):
+    title_query = request.GET.get("title", "").strip()
+
+    experience_list = Experience.objects.all()
+
+    if title_query:
+        experience_list = experience_list.filter(
+            title__icontains=title_query
+        )
+
+    context = {
+        "name": "Finna Aprilia",
+        "title_query": title_query,
+        "experience_list": experience_list,
+        "form": ExperienceForm(),
+    }
+
+    return render(request, "experience.html", context)
 
 def create_experience(request):
     form = ExperienceForm(request.POST or None)
@@ -281,8 +294,6 @@ def create_experience_ajax(request):
     return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
 
 
-from django.http import JsonResponse
-
 def get_experiences_json(request):
     title_query = request.GET.get("title", "").strip()
     experiences = Experience.objects.all()
@@ -316,6 +327,29 @@ def delete_experience(request, experience_id):
         return redirect("main:show_experience")
 
     return redirect("main:show_experience")
+
+
+# =============================================================
+# ========================= INTEREST ==========================
+# =============================================================
+
+def show_interest(request):
+    json_response = get_interests_json(request)
+
+    interests = serializers.deserialize(
+        "json",
+        json_response.content.decode("utf-8"),
+    )
+    interests = [interest.object for interest in interests]
+    title_query = request.GET.get("title", "").strip()
+
+    context = {
+        "name": "Finna Aprilia",
+        "interest_list": interests,
+        "title_query": title_query,
+    }
+
+    return render(request, "interest.html", context)
 
 def create_interest(request):
     form = InterestForm(request.POST or None)
@@ -352,6 +386,9 @@ def delete_interest(request, interest_id):
     return redirect("main:show_interest")
 
 
+# =============================================================
+# ================= REGISTER, LOGIN, LOGOUT ===================
+# =============================================================
 
 def register(request):
     form = UserCreationForm(request.POST or None)
@@ -389,19 +426,3 @@ def logout_user(request):
     response.delete_cookie("last_login")    #  menghapus cookie last_login menggunakan method delete_cookie()
                                             #  agar informasi di browser klien tetap sinkron dan bersih
     return response
-
-
-# Tanpa cek is_superuser: semua akun yang sudah login boleh memberi star
-@login_required(login_url="/login/")
-def toggle_star(request, project_id):
-    project = get_object_or_404(Project, pk=project_id)
-
-    if request.method == "POST":
-        # Kalau akun ini sudah pernah memberi star, batalkan star-nya.
-        # Kalau belum, tambahkan star.
-        if request.user in project.starred_by.all():
-            project.starred_by.remove(request.user)
-        else:
-            project.starred_by.add(request.user)
-
-    return redirect("main:show_project")
