@@ -304,15 +304,19 @@ def get_experiences_json(request):
     # Konstruksi data JSON secara manual agar bisa menyisipkan logika Star
     data = []
     for experience in experiences:
+        starred_users = experience.starred_by.all()
+        is_starred = request.user in starred_users if request.user.is_authenticated else False
+        starred_by_names = ", ".join([u.username for u in starred_users])
+        
         data.append({
             "pk": str(experience.id),
             "fields": {
                 "title": experience.title,
                 "description": experience.description,
-                "thumbnail": experience.thumbnail,
-                "star_count": 0,
-                "is_starred": False,
-                "starred_by_names": "",
+                "thumbnail": experience.thumbnail.url if experience.thumbnail else "",
+                "star_count": starred_users.count(),
+                "is_starred": is_starred,
+                "starred_by_names": starred_by_names,
             }
         })
 
@@ -325,6 +329,20 @@ def delete_experience(request, experience_id):
         experience.delete()
         messages.success(request, "Pengalaman berhasil dihapus!")
         return redirect("main:show_experience")
+
+    return redirect("main:show_experience")
+
+@login_required(login_url="/login/")
+def toggle_experience_star(request, experience_id):
+    experience = get_object_or_404(Experience, pk=experience_id)
+
+    if request.method == "POST":
+        # Kalau akun ini sudah pernah memberi star, batalkan star-nya.
+        # Kalau belum, tambahkan star.
+        if request.user in experience.starred_by.all():
+            experience.starred_by.remove(request.user)
+        else:
+            experience.starred_by.add(request.user)
 
     return redirect("main:show_experience")
 

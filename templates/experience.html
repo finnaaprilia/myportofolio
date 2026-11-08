@@ -141,6 +141,8 @@
         // Dummy UUID digunakan untuk digantikan oleh ID asli dari data JSON
         const deleteUrl = "{% url 'main:delete_experience' '00000000-0000-0000-0000-000000000000' %}"
             .replace('00000000-0000-0000-0000-000000000000',experienceId);
+        const starUrl = "{% url 'main:toggle_experience_star' '00000000-0000-0000-0000-000000000000' %}"
+            .replace('00000000-0000-0000-0000-000000000000', experienceId);
 
         const deleteHtml = IS_SUPERUSER 
             ? `<form method="post" action="${deleteUrl}" style="display:inline;">
@@ -149,11 +151,11 @@
             </form>`
             : '';
 
-        // const isStarredClass = project.is_starred ? " is-starred" : "";
-        // const starText = project.is_starred ? "Unstar" : "Star";
-        // const starTitle = project.star_count > 0 
-        //     ? `Dibintangi oleh ${project.starred_by_names}` 
-        //     : "Jadilah yang pertama memberi star";
+        const isStarredClass = experience.is_starred ? " is-starred" : "";
+        const starText = experience.is_starred ? "Unstar" : "Star";
+        const starTitle = experience.star_count > 0 
+            ? `Dibintangi oleh ${experience.starred_by_names}` 
+            : "Jadilah yang pertama memberi star";
 
         // Komponen card
         const completeCardHtml = `
@@ -162,9 +164,12 @@
             <p class="experience-description">${escapeHtml(experience.description)}</p>
             <div class="project-card-actions">
                 <div class="project-actions">
-                    
-                
-
+                    <button type="button"
+                    class="button button-star${isStarredClass}"
+                    data-id="${experienceId}"
+                    title="${escapeHtml(starTitle)}">
+                    ★ ${starText} (${experience.star_count ?? 0})
+                </button>
                     ${deleteHtml}
                 </div>
             </div>
@@ -210,8 +215,22 @@
     }
 
     function searchExperiences() {
-    fetchExperiences(searchInput.value.trim());
-    }
+        fetchExperiences(searchInput.value.trim());
+        }
+
+        gridContainer.addEventListener('click', async function (event) {
+        const button = event.target.closest('.button-star');
+        if (!button) return;
+
+        const response = await fetch(`/experiences/${button.dataset.id}/star/`, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCookie('csrftoken') },
+        });
+
+        if (response.ok) {
+            fetchExperiences(searchInput.value.trim());
+        }
+    });
 
     searchInput.addEventListener("input", function() {
         clearTimeout(searchDebounceTimer);
