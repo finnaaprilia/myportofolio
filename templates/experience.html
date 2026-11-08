@@ -9,6 +9,11 @@
                 <p class="section-kicker">My journey so far</p>
                 <div class="project-header">
 
+                    <!--  tombol uji coba notifikasi toast -->
+                    <button class="button button-secondary" onclick="showToast('Notifikasi Sistem', 'Pengalaman berhasil dimuat dengan baik!', 'success')">
+                        Test Toast Notifikasi
+                    </button>
+
                     <h1>Experiences</h1>
                     {% if user.is_superuser %}
 
@@ -288,7 +293,7 @@
             if (response.ok) {
                 experienceForm.reset();
                 closeExperienceModal();
-                showToast('Berhasil', 'Proyek baru berhasil ditambahkan!', 'success');
+                showToast('Berhasil', 'Pengalaman baru berhasil ditambahkan!', 'success');
                 fetchExperiences(searchInput.value.trim());
             } else {
                 const errorMessages = result.errors
