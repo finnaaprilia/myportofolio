@@ -17,7 +17,7 @@ from main.serializers import ProjectSerializer, ExperienceSerializer
 
 @api_view(["GET", "HEAD", "POST"])
 @authentication_classes([SessionAuthentication])
-@permission_classes([IsPortfolioOwnerOrEditorOrReadOnly]) # Tutorial 07
+@permission_classes([IsPortfolioOwnerOrReadOnly]) # Tutorial 07
 def project_list(request):
     if request.method in ("GET", "HEAD"):
         projects = Project.objects.prefetch_related("starred_by").order_by("title", "id")
@@ -37,7 +37,7 @@ def project_list(request):
 
 @api_view(["GET", "HEAD", "PUT", "PATCH", "DELETE"])
 @authentication_classes([SessionAuthentication])
-@permission_classes([IsPortfolioOwnerOrEditorOrReadOnly]) # Tutorial 07
+@permission_classes([IsPortfolioOwnerOrReadOnly]) # Tutorial 07
 def project_detail(request, project_id):
     project = get_object_or_404(
         Project.objects.prefetch_related("starred_by"), pk=project_id,
@@ -78,7 +78,7 @@ def project_star(request, project_id):
 
 @api_view(["GET", "HEAD", "POST"])
 @authentication_classes([SessionAuthentication])
-@permission_classes([IsPortfolioOwnerOrReadOnly])
+@permission_classes([IsPortfolioOwnerOrEditorOrReadOnly])
 def experience_list(request):
     if request.method in ("GET", "HEAD"):
         experiences = Experience.objects.prefetch_related("starred_by").order_by("title", "id")
@@ -98,7 +98,7 @@ def experience_list(request):
 
 @api_view(["GET", "HEAD", "PUT", "PATCH", "DELETE"])
 @authentication_classes([SessionAuthentication])
-@permission_classes([IsPortfolioOwnerOrReadOnly])
+@permission_classes([IsPortfolioOwnerOrEditorOrReadOnly])
 def experience_detail(request, experience_id):
     experience = get_object_or_404(
         Experience.objects.prefetch_related("starred_by"), pk=experience_id,
