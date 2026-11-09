@@ -263,3 +263,64 @@ ID yang bersifat unik akan memberi tahu project mana yang ingin di edit. Apabila
 ``` Dokumentasi & AI Disclosure ```
 
 Pengerjaan Tugas 5 dilakukan dengan bantuan Gemini.
+
+
+
+
+### Tugas 6
+
+
+``` Pertanyaan Reflektif ```
+
+1. Jelaskan apa yang dimaksud dengan REST dan mengapa mengembalikan JSON saja belum cukup untuk menyebut sebuah API sebagai RESTful! Jelaskan pula perbedaan PUT dan PATCH beserta contoh kapan masing-masing sebaiknya digunakan!
+
+— Representational State Transfer (REST) adalah arsitektur perangkat lunak yang memberlakukan syarat mengenai cara API bekerja. Prinsip gaya arsitektur REST antara lain antarmuka seragam, statelessness, sistem berlapis, ketersinggahan (cacheability), dan kode sesuai permintaan.
+
+— REST sendiri menjadi gaya arsitektur untuk merancang web API, bukan library atau format data. Karena itulah API yag mengembalikan JSON belum tentu RESTful.
+
+— PUT mengirim representasi pengganti, dengan seluruh field wajib. Sederhananya, PUT meng-update resource, tapi mengganti data secara keseluruhan (replace total). Cara kerjanya, PUT menimpa resource dengan data baru secara keseluruhan. Sebagai contoh, pada Project, jika request PUT hanya mengirim title, field lain seperti description dan tech_stack akan hilang/bernilai kosong karena di-replace total. Dalam kasus ini, PUT dengan hanya title akan gagal karena description dan tech_stack bersifat wajib. Sedangkan PATCH mengirim hanya field yang ingin diubah, field lain tetap aman tidak tersentuh.
+
+— Apabila ingin meng-update satu field saja, gunakan PATCH agar data lain tidak ketimpa. Jika memang ingin menimpa semua data, gunakan PUT.
+
+
+2. Jelaskan peran serializer pada Django REST Framework! Apa keuntungannya dibandingkan merakit dictionary secara manual dengan JsonResponse seperti pada Tutorial 05?
+
+— Serializer digunakan untuk memvalidasi (is_valid()) dan menyimpan input (save()). Serializer bekerja dua arah. Pada GET, serializer mengubah objek model menjaid tipe data Python yang dapat dirender ke JSON (serialization). Pada POST/PATCH, serializer mengubah input menjadi data yang sudah divalidasi dan siap disimpan (deserialization). Hasil serializer belum berupa string JSON, renderer DRF yang mengubahnya menjadi isi response.
+
+— Merakit dictionary secara manual dengan JsonResponse menggunakan perulangan untuk mengubah setiap objek menjadi sebuah dictionary. Di dalam perulangan tersebut, kita juga memeriksa apakah request ada di dalam daftar. JsonResponse kemudian mengirimkan data utuh ini ke browser.
+
+— Serializer membuat proses validasi dapat dilakukan secara otomatis tanpa perlu mengambil dan memvalidasi input satu per satu. Selain itu, kode menjadi tidak berulang dan lebih ringkas.
+
+
+3. Jelaskan perbedaan autentikasi dan otorisasi pada Django REST Framework! Mengapa hak akses harus diperiksa dengan permission class di server, bukan hanya dengan menyembunyikan tombol di template?
+
+— Autentikasi menjawab siapa kamu, sedangkan Otorisasi menjawab apa yang boleh kamu lakukan. Di DRF, keduanya dipisahkan: authentication class mengisi request.user, lalu permission class memutuskan apakah request boleh diteruskan.
+
+— Keamanan di sisi client (frontend) sangat rentan untuk dimanipulasi. Lewat developer tools, user bisa mengubah kode untuk memunculkan tombol. Maka, hak akses harus diperiksa dengan permission class di server, dimana server akan mencocokkan identitas pengguna tersebut langsung dengan database untuk melihat apakah mereka benar-benar memiliki hak akses (role/permission).
+
+
+
+4. Jelaskan mengapa permintaan yang mengubah data tetap memerlukan token CSRF ketika API memakai SessionAuthentication! Mengapa test yang memakai force_authenticate tidak cukup untuk membuktikan bahwa perlindungan CSRF berjalan?
+
+— SessionAuthentication mengenali session Django dari login yang sudah dibuat. Browser pada origin yang sama mengirim cookie session pada request Fetch. Untuk POST, PUT, PATCH, dan DELETE dari pengguna yang terautentikasi melalui session, sertakan token CSRF. Mengapa perlu token CSRF? Karena autentikasi berbasis session rentan terhadap serangan CSRF. Maka, dengan adanya token CSRF, yang dilakukan tidak hanya pemeriksaan session cookie, tetapi juga pencocokan token CSRF yang dikirim manual.
+
+— force_authenticate digunakan untuk mensimulasikan pengguna yang sudah masuk log secara langsung. force_authenticate memudahkan pengujian permission dengan memilih pengguna secara langsung; ini tidak menguji proses login atau CSRF.
+
+— Jadi, framework akan langsung menyuntikkan objek pengguna (request.user) ke dalam permintaan dan menandainya sebagai terautentikasi. Akibatnya, framework menganggap pemeriksaan keamanan dasar sudah selesai, sehingga pemeriksaan token CSRF justru dilewati sepenuhnya.
+
+
+
+``` Dokumentasi & AI Disclosure ```
+
+Pengerjaan Tugas 6 dilakukan dengan mengikuti Tutorial 7 tanpa bantuan AI.
+
+
+``` Referensi ```
+
+(1) https://pbp.cs.ui.ac.id/tutorial/tutorial-7.html
+
+(2) https://aws.amazon.com/id/what-is/restful-api/
+
+(3) https://pemburukode.com/perbedaan-patch-dan-put-di-api/
+
+(4) https://halovina.com/membuat-serializer-django-rest-framework/
