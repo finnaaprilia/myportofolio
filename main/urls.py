@@ -36,8 +36,3 @@ urlpatterns = [
     path("logout/", logout_user, name="logout"),
     
 ]
-
-urlpatterns += [
-    path("api/v1/", include("main.api_urls")),
-    path("api-auth/", include("rest_framework.urls")),
-]
