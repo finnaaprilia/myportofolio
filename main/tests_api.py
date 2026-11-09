@@ -17,9 +17,9 @@ class ProjectAPITest(APITestCase):
         self.project = Project.objects.create(
             title="Portfolio", description="My website", tech_stack="Django",
         )
-        self.list_url = reverse("main:api:project-list")
-        self.detail_url = reverse("main:api:project-detail", args=[self.project.id])
-        self.star_url = reverse("main:api:project-star", args=[self.project.id])
+        self.list_url = reverse("api:project-list")
+        self.detail_url = reverse("api:project-detail", args=[self.project.id])
+        self.star_url = reverse("api:project-star", args=[self.project.id])
         self.payload = {
             "title": "New project", "description": "A useful app", "tech_stack": "Python",
             "project_url": "https://example.com/", "project_image_url": "",
@@ -40,7 +40,7 @@ class ProjectAPITest(APITestCase):
         self.assertEqual(response.data, [])
 
     def test_missing_project(self):
-        url = reverse("main:api:project-detail", args=[uuid.uuid4()])
+        url = reverse("api:project-detail", args=[uuid.uuid4()])
         self.assertEqual(self.client.get(url).status_code, status.HTTP_404_NOT_FOUND)
 
     def test_guest_and_visitor_cannot_write(self):
