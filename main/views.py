@@ -82,10 +82,16 @@ def show_education(request):
 def show_project(request):
     title_query = request.GET.get("title", "").strip()
 
+    is_editor = (
+        request.user.is_authenticated
+        and request.user.groups.filter(name="Editor").exists()
+    )
+
     context = {
         "name": "Finna Aprilia",
         "title_query": title_query,
         "form": ProjectForm(),
+        "is_editor": is_editor,
     }
     return render(request, "project.html", context)
 

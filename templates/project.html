@@ -72,7 +72,7 @@
         </section>
     </main>
 
-{% if user.is_superuser %}
+{% if user.is_superuser or is_editor %}
     {% include "components/project_form_modal.html" %}
 {% endif %}
     
@@ -84,6 +84,9 @@
         const STAR_PROJECT_ENDPOINT = "{% url 'api:project-star' '00000000-0000-0000-0000-000000000000' %}";
         const IS_SUPERUSER = "{{ user.is_superuser|yesno:'true,false' }}" === "true";
         const IS_AUTHENTICATED = "{{ user.is_authenticated|yesno:'true,false' }}" === "true";
+        const CAN_EDIT = IS_SUPERUSER || "{{ is_editor|yesno:'true,false' }}" === "true";
+        const projectsById = {};
+        let editingId = null;
 
         const loadingState = document.getElementById('loading');
         const errorState = document.getElementById('error');
@@ -136,11 +139,14 @@
             const remove = IS_SUPERUSER
                 ? `<button type="button" class="button button-danger" data-action="delete"
                     data-id="${escapeHtml(project.id)}">Delete</button>` : '';
+            const edit = CAN_EDIT
+                ? `<button type="button" class="button button-secondary" data-action="edit"
+                    data-id="${escapeHtml(project.id)}">Update</button>` : '';
             article.innerHTML = `${image}<h2>${escapeHtml(project.title)}</h2>
                 <span class="experience-category">${escapeHtml(project.tech_stack)}</span>
                 <p class="experience-description">${escapeHtml(project.description)}</p>
                 <div class="project-card-actions"><div class="project-actions">
-                ${link}${star}${remove}</div></div>`;
+                ${link}${edit}${star}${remove}</div></div>`;
             return article;
         }
 
@@ -157,6 +163,8 @@
                 });
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const projects = await response.json();
+                Object.keys(projectsById).forEach(key => delete projectsById[key]);
+                projects.forEach(item => { projectsById[item.id] = item; });
                 gridContainer.replaceChildren(...projects.map(buildProjectCardElement));
                 displayPageSection({ showGrid: projects.length > 0, showEmpty: projects.length === 0 });
             } catch (error) {
@@ -164,6 +172,33 @@
                 console.error(error);
                 displayPageSection({ showError: true });
             }
+        }
+
+        // === edit project ===
+        const PROJECT_FIELDS = ['title', 'description', 'tech_stack', 'project_url', 'project_image_url'];
+
+        function openEditModal(id) {
+            const project = projectsById[id];
+            if (!project || !projectForm) return;
+            editingId = id;
+            PROJECT_FIELDS.forEach(name => {
+                const input = projectForm.elements[name];
+                if (!input) return;
+                if (input.type === 'checkbox') input.checked = Boolean(project[name]);
+                else input.value = project[name] ?? '';
+            });
+            document.getElementById('add-project-modal').showPopover();
+        }
+
+        // Saat modal ditutup, kembali ke mode tambah
+        const projectModal = document.getElementById('add-project-modal');
+        if (projectModal) {
+            projectModal.addEventListener('toggle', event => {
+                if (event.newState === 'closed') {
+                    editingId = null;
+                    projectForm.reset();
+                }
+            });
         }
 
         function apiErrorMessage(data, status) {
@@ -196,8 +231,15 @@
                 const payload = Object.fromEntries([
                     'title', 'description', 'tech_stack', 'project_url', 'project_image_url',
                 ].map(name => [name, fields.get(name)]));
-                await writeProject(BASE_PROJECTS_ENDPOINT, 'POST', payload);
-                projectForm.reset();
+
+                if (editingId) {
+                    await writeProject(projectEndpoint(DETAIL_PROJECT_ENDPOINT, editingId), 'PATCH', payload);
+                    showToast('Success', 'Project updated.', 'success');
+                } else {
+                    await writeProject(BASE_PROJECTS_ENDPOINT, 'POST', payload);
+                    showToast('Success', 'Project created.', 'success');
+                }
+
                 document.getElementById('add-project-modal').hidePopover();
                 showToast('Success', 'Project created.', 'success');
                 await fetchProjects(searchInput.value.trim());
@@ -214,6 +256,11 @@
             const button = event.target.closest('button[data-action]');
             if (!button || button.disabled) return;
             const action = button.dataset.action;
+            if (action === 'edit') {
+                openEditModal(button.dataset.id);
+                return;
+            }
+
             if (action === 'delete' && !window.confirm('Delete this project?')) return;
             button.disabled = true;
             try {
