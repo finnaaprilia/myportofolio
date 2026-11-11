@@ -19,7 +19,7 @@
 
                         <button type="button"
                             class="button project-add-button"
-                            popovertarget="add-project-modal">
+                            popovertarget="add-experience-modal">
                             <span aria-hidden="true">+</span>
                             Tambah Pengalaman
                         </button>
@@ -89,7 +89,7 @@
         </section>
     </main>
 
-{% if user.is_superuser %}
+{% if user.is_superuser or is_editor %}
     {% include "components/experience_form_modal.html" %}
 {% endif %}
     
@@ -101,6 +101,9 @@
         const STAR_EXPERIENCE_ENDPOINT = "{% url 'api:experience-star' '00000000-0000-0000-0000-000000000000' %}";
         const IS_SUPERUSER = "{{ user.is_superuser|yesno:'true,false' }}" === "true";
         const IS_AUTHENTICATED = "{{ user.is_authenticated|yesno:'true,false' }}" === "true";
+        const CAN_EDIT = IS_SUPERUSER || "{{ is_editor|yesno:'true,false' }}" === "true";
+        const experiencesById = {};
+        let editingId = null;
 
         const loadingState = document.getElementById('loading');
         const errorState = document.getElementById('error');
@@ -150,15 +153,23 @@
                     title="${escapeHtml(experience.starred_by_names)}">
                     ${experience.is_starred ? 'Unstar' : 'Star'} (${experience.star_count})</button>`
                 : `<a href="{% url 'main:login' %}" class="button">Login to star (${experience.star_count})</a>`;
+
             const remove = IS_SUPERUSER
                 ? `<button type="button" class="button button-danger" data-action="delete"
                     data-id="${escapeHtml(experience.id)}">Delete</button>` : '';
+            
+                    // tombol update experience
+            const edit = CAN_EDIT
+                ? `<button type="button" class="button button-secondary" data-action="edit"
+                    data-id="${escapeHtml(experience.id)}">Update</button>` : '';
+
             article.innerHTML = `${image}<h2>${escapeHtml(experience.title)}</h2>
                 <span class="experience-category">${escapeHtml(experience.category)}</span>
                 <p class="experience-description">${escapeHtml(experience.description)}</p>
                 <div class="project-card-actions"><div class="project-actions">
-                ${star}${remove}</div></div>`;
+                ${star}${edit}${remove}</div></div>`;
             return article;
+
         }
 
         async function fetchExperiences(searchQuery = '') {
@@ -174,8 +185,11 @@
                 });
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const experiences = await response.json();
+                Object.keys(experiencesById).forEach(key => delete experiencesById[key]);
+                experiences.forEach(item => { experiencesById[item.id] = item; });
                 gridContainer.replaceChildren(...experiences.map(buildExperienceCardElement));
                 displayPageSection({ showGrid: experiences.length > 0, showEmpty: experiences.length === 0 });
+
             } catch (error) {
                 if (error.name === 'AbortError') return;
                 console.error(error);
@@ -204,6 +218,33 @@
             return data;
         }
 
+        // === edit experience ===
+        const EXPERIENCE_FIELDS = ['title', 'description', 'thumbnail', 'category', 'is_ongoing'];
+
+        function openEditModal(id) {
+            const experience = experiencesById[id];
+            if (!experience || !experienceForm) return;
+            editingId = id;
+            EXPERIENCE_FIELDS.forEach(name => {
+                const input = experienceForm.elements[name];
+                if (!input) return;
+                if (input.type === 'checkbox') input.checked = Boolean(experience[name]);
+                else input.value = experience[name] ?? '';
+            });
+            document.getElementById('add-experience-modal').showPopover();
+        }
+
+        // Saat modal ditutup, kembali ke mode tambah
+        const experienceModal = document.getElementById('add-experience-modal');
+        if (experienceModal) {
+            experienceModal.addEventListener('toggle', event => {
+                if (event.newState === 'closed') {
+                    editingId = null;
+                    experienceForm.reset();
+                }
+            });
+        }
+
         async function addExperience(event) {
             event.preventDefault();
             const button = experienceForm.querySelector('button[type="submit"]');
@@ -211,12 +252,19 @@
             try {
                 const fields = new FormData(experienceForm);
                 const payload = Object.fromEntries([
-                    'title', 'description', 'thumbnail', 'category', 'is_ongoing',
+                    'title', 'description', 'thumbnail', 'category',
                 ].map(name => [name, fields.get(name)]));
-                await writeExperience(BASE_EXPERIENCES_ENDPOINT, 'POST', payload);
-                experienceForm.reset();
+                payload.is_ongoing = experienceForm.elements.is_ongoing?.checked ?? false;
+
+                if (editingId) {
+                    await writeExperience(experienceEndpoint(DETAIL_EXPERIENCE_ENDPOINT, editingId), 'PATCH', payload);
+                    showToast('Success', 'Experience updated.', 'success');
+                } else {
+                    await writeExperience(BASE_EXPERIENCES_ENDPOINT, 'POST', payload);
+                    showToast('Success', 'Experience created.', 'success');
+                }
+                
                 document.getElementById('add-experience-modal').hidePopover();
-                showToast('Success', 'Experience created.', 'success');
                 await fetchExperiences(searchInput.value.trim());
             } catch (error) {
                 showToast('Could not create experience', error.message, 'error');
@@ -230,7 +278,13 @@
         gridContainer.addEventListener('click', async function(event) {
             const button = event.target.closest('button[data-action]');
             if (!button || button.disabled) return;
+
             const action = button.dataset.action;
+            if (action === 'edit') {
+                openEditModal(button.dataset.id);
+                return;
+            }
+
             if (action === 'delete' && !window.confirm('Delete this experience?')) return;
             button.disabled = true;
             try {

@@ -252,11 +252,17 @@ def show_experience(request):
             title__icontains=title_query
         )
 
+    is_editor = (
+        request.user.is_authenticated
+        and request.user.groups.filter(name="Editor").exists()
+    )
+
     context = {
         "name": "Finna Aprilia",
         "title_query": title_query,
         "experience_list": experience_list,
         "form": ExperienceForm(),
+        "is_editor": is_editor,
     }
 
     return render(request, "experience.html", context)
